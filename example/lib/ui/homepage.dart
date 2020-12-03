@@ -1,12 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_radio_player/flutter_radio_player.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_radio_player_example/model/mobile.dart';
 import 'package:flutter_radio_player_example/ui/mobile_city.dart';
 import 'package:flutter_radio_player_example/ui/mobile_rank.dart';
 import 'package:flutter_radio_player_example/ui/playlist.dart';
 import 'package:flutter_radio_player_example/ui/widgets.dart';
+
+import 'about.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -26,7 +27,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin implements IfacePlaylist{
   FlutterRadioPlayer _flutterRadioPlayer = new FlutterRadioPlayer();
   AnimationController _animationController;
   int _currentPage = 0;
@@ -34,9 +36,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _initPlayer();
   }
-
 
   @override
   void dispose() {
@@ -44,9 +47,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  void _initPlayer() async {
+    await _flutterRadioPlayer.init(
+        "JogjaScreamer", "subTitle", "streamURL", "true");
+  }
 
   void _newRadio(String stationsName, String stationsUri) async {
-    await _flutterRadioPlayer.setUrl(stationsUri, "true");
+    await _flutterRadioPlayer.setUrl(stationsName, stationsUri, "true");
     await _flutterRadioPlayer.play();
   }
 
@@ -68,10 +75,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         children: <Widget>[
           NotificationListener<UserScrollNotification>(
               onNotification: (notification) {
-                if(notification.direction == ScrollDirection.forward) {
+                if (notification.direction == ScrollDirection.forward) {
                   _animationController.forward();
                 }
-                if(notification.direction == ScrollDirection.reverse) {
+                if (notification.direction == ScrollDirection.reverse) {
                   _animationController.reverse();
                 }
                 return true;
@@ -79,12 +86,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: IndexedStack(
                 index: _currentPage,
                 children: <Widget>[
-                  PlaylistPage(),
+                  PlaylistPage(this),
+                  CityPage(),
                   RankPage(),
-                  CityPage()
+                  AboutPage()
                 ],
-              )
-          ),
+              )),
           Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedBuilder(
@@ -93,39 +100,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 return SizeTransition(
                     axisAlignment: -1,
                     sizeFactor: _animationController,
-                    child: child
-                );
+                    child: child);
               },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(height: 1.0, color: Colors.grey[300],),
-                  Container(
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.search,color: _currentPage == 1 ? Colors.red : Colors.black54),
-                          onPressed: () {
-                            setState(() {
-                              _currentPage = 1;
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.person, color: _currentPage == 2 ? Colors.red : Colors.black54),
-                          onPressed: () {
-                            setState(() {
-                              _currentPage = 2;
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: Text("knknm"),
             ),
           ),
         ],
@@ -142,14 +119,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ListTile(
               leading: Icon(Icons.featured_play_list_outlined),
               title: Text('Playlist'),
+              onTap: () {
+                setState(() {
+                  _currentPage = 0;
+                });
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: Icon(Icons.location_city),
               title: Text('mobile_city'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
+                setState(() {
+                  _currentPage = 1;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -157,6 +140,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               leading: Icon(Icons.leaderboard),
               title: Text('mobile_ranking'),
               onTap: () {
+                setState(() {
+                  _currentPage = 2;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -165,6 +151,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               leading: Icon(Icons.info),
               title: Text('About'),
               onTap: () {
+                setState(() {
+                  _currentPage = 3;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -172,5 +161,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
       ),
     ); // This trailing comma makes auto-formatting nicer for build methods.
+  }
+
+  @override
+  void selectStation(Station station) {
+    _newRadio(station.name, station.streamURL);
   }
 }

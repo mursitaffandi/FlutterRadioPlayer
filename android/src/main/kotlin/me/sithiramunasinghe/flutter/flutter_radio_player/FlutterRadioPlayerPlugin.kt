@@ -92,9 +92,10 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
             }
             PlayerMethods.SET_URL.value -> {
                 logger.info("Set url invoked")
+                val subTitle = call.argument<String>("subTitle")!!
                 val url = call.argument<String>("streamUrl")!!
                 val playWhenReady = call.argument<String>("playWhenReady")!!
-                setUrl(url, playWhenReady)
+                setUrl(subTitle ,url, playWhenReady)
             }
             else -> result.notImplemented()
         }
@@ -216,9 +217,9 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         coreService.stop()
     }
 
-    private fun setUrl(streamUrl: String, playWhenReady: String) {
+    private fun setUrl(subTitle: String, streamUrl: String, playWhenReady: String) {
         val playStatus: Boolean = playWhenReady == "true"
-        coreService.setUrl(streamUrl, playStatus)
+        coreService.setUrl(subTitle, streamUrl, playStatus)
     }
 
     private fun setVolume(volume: Double) {

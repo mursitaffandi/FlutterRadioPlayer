@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.Nullable
+import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -95,11 +96,15 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
         player?.volume = volume.toFloat()
     }
 
-    fun setUrl(streamUrl: String, playWhenReady: Boolean) {
+    fun setUrl(subTitle: String, streamUrl: String, playWhenReady: Boolean) {
         logger.info("ReadyPlay status: $playWhenReady")
         logger.info("Set stream URL: $streamUrl")
-        player?.prepare(buildMediaSource(dataSourceFactory, streamUrl))
+        player?.prepare(buildMediaSource(dataSourceFactory, streamUrl, subTitle))
         player?.playWhenReady = playWhenReady
+    }
+
+    val currentSubTitle: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -115,12 +120,12 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
         val subTitle = intent.getStringExtra("subTitle")
         val streamUrl = intent.getStringExtra("streamUrl")
         val playWhenReady = intent.getStringExtra("playWhenReady") == "true"
-
+        currentSubTitle.value = intent.getStringExtra("subTitle")
         player = SimpleExoPlayer.Builder(context).build()
 
         dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, appName))
 
-        val audioSource = buildMediaSource(dataSourceFactory, streamUrl)
+        val audioSource = buildMediaSource(dataSourceFactory, streamUrl, subTitle)
 
         val playerEvents = object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -181,7 +186,7 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
 
                     @Nullable
                     override fun getCurrentContentText(player: Player): String? {
-                        return subTitle
+                        return currentSubTitle.value
                     }
 
                     @Nullable
@@ -279,8 +284,8 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
     /**
      * Build the media source depending of the URL content type.
      */
-    private fun buildMediaSource(dataSourceFactory: DefaultDataSourceFactory, streamUrl: String): MediaSource {
-
+    private fun buildMediaSource(dataSourceFactory: DefaultDataSourceFactory, streamUrl: String, subTitle: String): MediaSource {
+        currentSubTitle.value = subTitle
         val uri = Uri.parse(streamUrl)
 
         return when (val type = Util.inferContentType(uri)) {

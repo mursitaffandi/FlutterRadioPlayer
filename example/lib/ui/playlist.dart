@@ -5,11 +5,22 @@ import 'package:flutter_radio_player_example/repository/repo.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class PlaylistPage extends StatefulWidget {
+  IfacePlaylist ifacePlaylist;
+  PlaylistPage(_homePageState){
+    this.ifacePlaylist = ifacePlaylist;
+  }
+
   @override
-  _PlaylistPageState createState() => _PlaylistPageState();
+  _PlaylistPageState createState() => _PlaylistPageState(ifacePlaylist);
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+  IfacePlaylist callback;
+
+  _PlaylistPageState(IfacePlaylist callback){
+    this.callback = callback;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +63,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       width: 100.0,
                     ),
                     title: Text(stations[index].name),
-                    onTap: () {});
+                    onTap: () {
+                      callback.selectStation(stations[index]);
+                    });
               },
             ),
           ),
@@ -120,4 +133,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
       });
     });
   }
+}
+
+abstract class IfacePlaylist{
+  void selectStation(Station station);
 }
