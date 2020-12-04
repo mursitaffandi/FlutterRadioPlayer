@@ -48,12 +48,12 @@ class _HomePageState extends State<HomePage>
   }
 
   void _initPlayer() async {
-    await _flutterRadioPlayer.init(
-        "JogjaScreamer", "subTitle", "streamURL", "true");
+    await _flutterRadioPlayer.init("JogjaScreamer", "subTitle", "streamURL", "true");
   }
 
-  void _newRadio(String stationsName, String stationsUri) async {
-    await _flutterRadioPlayer.setUrl(stationsName, stationsUri, "true");
+  void _newRadio(String stationsName, String stationsUri, String urlImage) async {
+    _pauseRadio();
+    await _flutterRadioPlayer.setUrl(stationsName, stationsUri, "true", urlImage);
     await _flutterRadioPlayer.play();
   }
 
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage>
               child: IndexedStack(
                 index: _currentPage,
                 children: <Widget>[
-                  PlaylistPage(this),
+                  PlaylistPage(ifacePlaylist: this),
                   CityPage(),
                   RankPage(),
                   AboutPage()
@@ -144,6 +144,7 @@ class _HomePageState extends State<HomePage>
                   _currentPage = 2;
                 });
                 Navigator.pop(context);
+
               },
             ),
             Divider(),
@@ -165,6 +166,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void selectStation(Station station) {
-    _newRadio(station.name, station.streamURL);
+    _newRadio(station.name, station.streamURL, station.imageURL);
   }
 }

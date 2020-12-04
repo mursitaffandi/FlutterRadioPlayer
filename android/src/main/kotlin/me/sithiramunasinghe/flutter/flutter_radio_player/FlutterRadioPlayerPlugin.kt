@@ -20,7 +20,7 @@ import me.sithiramunasinghe.flutter.flutter_radio_player.core.enums.PlayerMethod
 import java.util.logging.Logger
 
 /** FlutterRadioPlayerPlugin */
-public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
+class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
     private var logger = Logger.getLogger(FlutterRadioPlayerPlugin::javaClass.name)
 
     private lateinit var methodChannel: MethodChannel
@@ -95,7 +95,8 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
                 val subTitle = call.argument<String>("subTitle")!!
                 val url = call.argument<String>("streamUrl")!!
                 val playWhenReady = call.argument<String>("playWhenReady")!!
-                setUrl(subTitle ,url, playWhenReady)
+                val urlImage = call.argument<String>("urlImage")!!
+                setUrl(subTitle, url, playWhenReady, urlImage )
             }
             else -> result.notImplemented()
         }
@@ -169,6 +170,7 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         val appName = methodCall.argument<String>("appName")
         val subTitle = methodCall.argument<String>("subTitle")
         val playWhenReady = methodCall.argument<String>("playWhenReady")
+        val urlImage = methodCall.argument<String>("urlImage")
 
         return PlayerItem(appName!!, subTitle!!, url!!, playWhenReady!!)
     }
@@ -217,9 +219,9 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         coreService.stop()
     }
 
-    private fun setUrl(subTitle: String, streamUrl: String, playWhenReady: String) {
+    private fun setUrl(subTitle: String, streamUrl: String, playWhenReady: String, urlImage: String) {
         val playStatus: Boolean = playWhenReady == "true"
-        coreService.setUrl(subTitle, streamUrl, playStatus)
+        coreService.setUrl(subTitle, streamUrl, urlImage, playStatus)
     }
 
     private fun setVolume(volume: Double) {

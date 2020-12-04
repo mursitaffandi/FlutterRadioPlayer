@@ -5,10 +5,9 @@ import 'package:flutter_radio_player_example/repository/repo.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class PlaylistPage extends StatefulWidget {
-  IfacePlaylist ifacePlaylist;
-  PlaylistPage(_homePageState){
-    this.ifacePlaylist = ifacePlaylist;
-  }
+  final IfacePlaylist ifacePlaylist;
+
+  PlaylistPage({Key key, @required this.ifacePlaylist}) : super(key: key);
 
   @override
   _PlaylistPageState createState() => _PlaylistPageState(ifacePlaylist);
