@@ -102,7 +102,28 @@ class _HomePageState extends State<HomePage>
                     sizeFactor: _animationController,
                     child: child);
               },
-              child: Text("knknm"),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    new Icon(
+                        Icons.skip_previous,
+                        color: const Color(0xFF000000),
+                        size: 48.0),
+
+                    new Icon(
+                        Icons.play_arrow,
+                        color: const Color(0xFF000000),
+                        size: 48.0),
+
+                    new Icon(
+                        Icons.skip_next,
+                        color: const Color(0xFF000000),
+                        size: 48.0)
+                  ]
+
+              ),
             ),
           ),
         ],
