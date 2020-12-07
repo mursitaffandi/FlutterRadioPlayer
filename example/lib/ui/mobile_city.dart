@@ -11,8 +11,23 @@ class _CityPageState extends State<CityPage> {
   var cities = List<StationCity>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(cities[0].categoryName),
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: cities.length,
+      separatorBuilder: (ctx, ix) {
+        return Divider(
+          height: 2,
+        );
+      },
+      itemBuilder: (context, index) {
+        return ListTile(
+            leading: Container(
+              width: 100,
+            ),
+            title: Text(cities[index].categoryName),
+            );
+      },
     );
   }
 
