@@ -11,8 +11,26 @@ class _RankPageState extends State<RankPage> {
   var ranks = List<StationRank>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(ranks[0].nama),
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: ranks.length,
+      separatorBuilder: (ctx, ix) {
+        return Divider(
+          height: 2,
+        );
+      },
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: Container(
+            width: 100,
+          ),
+          title: Text(ranks[index].nama),
+          onTap: (){
+
+          },
+        );
+      },
     );
   }
 
