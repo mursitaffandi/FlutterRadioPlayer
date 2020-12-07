@@ -19,10 +19,10 @@ class _RankPageState extends State<RankPage> {
   @override
   void initState() {
     super.initState();
-    _getAbout();
+    _getRanks();
   }
 
-  _getAbout() {
+  _getRanks() {
     Repository.ranks().then((response) {
       setState(() {
         ranks = response.station;

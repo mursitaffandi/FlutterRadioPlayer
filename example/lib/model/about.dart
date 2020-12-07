@@ -3,6 +3,6 @@ class About{
 
   About(this.text);
 
-  About.fromJsonMap(Map<String, String> map)
+  About.fromJsonMap(Map<String, dynamic> map)
       : text = map["text"];
 }

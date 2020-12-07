@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_radio_player_example/repository/repo.dart';
 
 class AboutPage extends StatefulWidget {
@@ -10,9 +11,17 @@ class _AboutPageState extends State<AboutPage> {
   var about = "";
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(about),
-    );
+    return Center(
+        child: SingleChildScrollView(
+          child: Html(
+            data: about,
+            padding: EdgeInsets.all(8.0),
+            onLinkTap: (url) {
+              print("Opening $url...");
+            },
+          ),
+        ),
+      );
   }
 
   @override

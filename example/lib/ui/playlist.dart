@@ -92,11 +92,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
     _getSlider();
   }
 
-  @override
-  dispose() {
-    super.dispose();
-  }
-
   onItemChanged(String value) {
     setState(() {
       stations = tempStation
@@ -105,10 +100,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
           .toList();
     });
   }
-
   Swiper imageSlider(context) {
     return new Swiper(
       autoplay: true,
+      // ignore: missing_return
       itemBuilder: (BuildContext context, int index) {
         for (int i = index; i < sliders.length; i++) {
           return Image.network(

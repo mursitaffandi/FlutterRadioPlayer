@@ -21,8 +21,14 @@ class Api {
     var response = await this.httpClient.get(url);
 
     if (response.statusCode != 200) throw new Exception('error getting about');
+    var start = "{";
+    var end = "}";
 
-    final jsonData = jsonDecode(response.body);
+    var startIndex = response.body.indexOf(start);
+    var endIndex = response.body.indexOf(end, startIndex);
+
+    final jsonData = jsonDecode(response.body.substring(startIndex , endIndex+1));
+    print(jsonData);
     return About.fromJsonMap(jsonData);
   }
 
