@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_radio_player_example/repository/repo.dart';
+import 'dart:developer';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -26,6 +27,8 @@ class _AboutPageState extends State<AboutPage> {
       setState(() {
         about = response.text;
       });
+      log('Repository.about().then((response): $response.text');
+
     });
   }
 
