@@ -135,8 +135,7 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
 
         dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, appName))
 
-        val audioSource = buildMediaSource(dataSourceFactory, streamUrl, currentSubTitle.value
-                ?: "")
+        val audioSource = buildMediaSource(dataSourceFactory, streamUrl, currentSubTitle.value ?: "")
 
         val playerEvents = object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

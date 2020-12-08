@@ -28,10 +28,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin implements IfacePlaylist{
+    with SingleTickerProviderStateMixin
+    implements IfacePlaylist {
   FlutterRadioPlayer _flutterRadioPlayer = new FlutterRadioPlayer();
   AnimationController _animationController;
   int _currentPage = 0;
+  bool musicState = false;
 
   @override
   void initState() {
@@ -48,12 +50,15 @@ class _HomePageState extends State<HomePage>
   }
 
   void _initPlayer() async {
-    await _flutterRadioPlayer.init("JogjaScreamer", "subTitle", "streamURL", "true");
+    await _flutterRadioPlayer.init(
+        "JogjaScreamer", "subTitle", "streamURL", "true");
   }
 
-  void _newRadio(String stationsName, String stationsUri, String urlImage) async {
+  void _newRadio(
+      String stationsName, String stationsUri, String urlImage) async {
     _pauseRadio();
-    await _flutterRadioPlayer.setUrl(stationsName, stationsUri, "true", urlImage);
+    await _flutterRadioPlayer.setUrl(
+        stationsName, stationsUri, "true", urlImage);
     await _flutterRadioPlayer.play();
   }
 
@@ -102,27 +107,53 @@ class _HomePageState extends State<HomePage>
                     sizeFactor: _animationController,
                     child: child);
               },
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    new Icon(
-                        Icons.skip_previous,
-                        color: const Color(0xFF000000),
-                        size: 48.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.skip_previous,
+                            color: const Color(0xFF000000),
+                            size: 56,
+                          ),
+                          onPressed: () {
 
-                    new Icon(
-                        Icons.play_arrow,
-                        color: const Color(0xFF000000),
-                        size: 48.0),
-
-                    new Icon(
-                        Icons.skip_next,
-                        color: const Color(0xFF000000),
-                        size: 48.0)
-                  ]
-
+                          },
+                        ),
+                        new IconButton(
+                          icon: new Icon(
+                            musicState? Icons.play_arrow : Icons.pause,
+                            color: const Color(0xFF000000),
+                            size: 56,
+                          ),
+                          onPressed: () {
+                            _pauseRadio();
+                          },
+                        ),
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.skip_next,
+                            color: const Color(0xFF000000),
+                            size: 56,
+                          ),
+                          onPressed: () {
+                            
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -165,7 +196,6 @@ class _HomePageState extends State<HomePage>
                   _currentPage = 2;
                 });
                 Navigator.pop(context);
-
               },
             ),
             Divider(),
@@ -188,5 +218,6 @@ class _HomePageState extends State<HomePage>
   @override
   void selectStation(Station station) {
     _newRadio(station.name, station.streamURL, station.imageURL);
+    _animationController.forward();
   }
 }
