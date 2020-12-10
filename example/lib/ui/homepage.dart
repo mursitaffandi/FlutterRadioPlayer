@@ -110,9 +110,13 @@ class _HomePageState extends State<HomePage>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+
                   Container(
-                    height: 1.0,
                     color: Colors.grey[300],
+                    child: MarqueeWidget(
+                        child: Text("This text is to long to be shown in just one line This text is to long to be shown in just one line This text is to long to be shown in just one line",
+                        style: TextStyle(fontSize: 23),)
+                    ),
                   ),
                   Container(
                     color: Colors.white,
@@ -126,13 +130,11 @@ class _HomePageState extends State<HomePage>
                             color: const Color(0xFF000000),
                             size: 56,
                           ),
-                          onPressed: () {
-
-                          },
+                          onPressed: () {},
                         ),
                         new IconButton(
                           icon: new Icon(
-                            musicState? Icons.play_arrow : Icons.pause,
+                            musicState ? Icons.play_arrow : Icons.pause,
                             color: const Color(0xFF000000),
                             size: 56,
                           ),
@@ -146,9 +148,7 @@ class _HomePageState extends State<HomePage>
                             color: const Color(0xFF000000),
                             size: 56,
                           ),
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                         )
                       ],
                     ),
