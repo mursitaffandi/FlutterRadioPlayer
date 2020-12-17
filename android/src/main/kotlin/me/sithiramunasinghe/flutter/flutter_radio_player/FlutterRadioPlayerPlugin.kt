@@ -20,7 +20,7 @@ import me.sithiramunasinghe.flutter.flutter_radio_player.core.enums.PlayerMethod
 import java.util.logging.Logger
 
 /** FlutterRadioPlayerPlugin */
-class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
+public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
     private var logger = Logger.getLogger(FlutterRadioPlayerPlugin::javaClass.name)
 
     private lateinit var methodChannel: MethodChannel
@@ -92,11 +92,9 @@ class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
             }
             PlayerMethods.SET_URL.value -> {
                 logger.info("Set url invoked")
-                val subTitle = call.argument<String>("subTitle")!!
                 val url = call.argument<String>("streamUrl")!!
                 val playWhenReady = call.argument<String>("playWhenReady")!!
-                val urlImage = call.argument<String>("urlImage")!!
-                setUrl(subTitle, url, playWhenReady, urlImage )
+                setUrl(url, playWhenReady)
             }
             else -> result.notImplemented()
         }
@@ -170,7 +168,6 @@ class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         val appName = methodCall.argument<String>("appName")
         val subTitle = methodCall.argument<String>("subTitle")
         val playWhenReady = methodCall.argument<String>("playWhenReady")
-        val urlImage = methodCall.argument<String>("urlImage")
 
         return PlayerItem(appName!!, subTitle!!, url!!, playWhenReady!!)
     }
@@ -219,9 +216,9 @@ class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         coreService.stop()
     }
 
-    private fun setUrl(subTitle: String, streamUrl: String, playWhenReady: String, urlImage: String) {
+    private fun setUrl(streamUrl: String, playWhenReady: String) {
         val playStatus: Boolean = playWhenReady == "true"
-        coreService.setUrl(subTitle, streamUrl, urlImage, playStatus)
+        coreService.setUrl(streamUrl, playStatus)
     }
 
     private fun setVolume(volume: Double) {

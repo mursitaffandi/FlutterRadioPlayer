@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.session.MediaSession
 import android.net.Uri
@@ -14,12 +13,7 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.Nullable
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
@@ -101,20 +95,11 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
         player?.volume = volume.toFloat()
     }
 
-    fun setUrl(subTitle: String, streamUrl: String, urlImage : String, playWhenReady: Boolean) {
+    fun setUrl(streamUrl: String, playWhenReady: Boolean) {
         logger.info("ReadyPlay status: $playWhenReady")
         logger.info("Set stream URL: $streamUrl")
-        currentIcon.value =  urlImage
-        player?.prepare(buildMediaSource(dataSourceFactory, streamUrl, subTitle))
+        player?.prepare(buildMediaSource(dataSourceFactory, streamUrl))
         player?.playWhenReady = playWhenReady
-    }
-
-    val currentSubTitle: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
-
-    val currentIcon: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -127,15 +112,15 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
 
         // get details
         val appName = intent!!.getStringExtra("appName")
+        val subTitle = intent.getStringExtra("subTitle")
         val streamUrl = intent.getStringExtra("streamUrl")
         val playWhenReady = intent.getStringExtra("playWhenReady") == "true"
-        currentIcon.value = intent.getStringExtra("urlImage")
-        currentSubTitle.value = intent.getStringExtra("subTitle")
+
         player = SimpleExoPlayer.Builder(context).build()
 
         dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, appName))
 
-        val audioSource = buildMediaSource(dataSourceFactory, streamUrl, currentSubTitle.value ?: "")
+        val audioSource = buildMediaSource(dataSourceFactory, streamUrl)
 
         val playerEvents = object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -196,27 +181,12 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
 
                     @Nullable
                     override fun getCurrentContentText(player: Player): String? {
-                        return currentSubTitle.value
+                        return subTitle
                     }
 
-                    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                     @Nullable
                     override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-                        var bmp: Bitmap? = null
-                            Glide
-                                .with(context)
-                                .asBitmap()
-                                .load(currentIcon.value)
-                                    .placeholder(context.getDrawable(R.drawable.appicon))
-                                .into(object : CustomTarget<Bitmap>() {
-                                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                        bmp = resource
-                                    }
-                                    override fun onLoadCleared(placeholder: Drawable?) {
-                                        context.getDrawable(R.drawable.appicon)
-                                    }
-                                })
-                        return bmp
+                        return null // OS will use the application icon.
                     }
                 },
                 object : PlayerNotificationManager.NotificationListener {
@@ -309,8 +279,8 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
     /**
      * Build the media source depending of the URL content type.
      */
-    private fun buildMediaSource(dataSourceFactory: DefaultDataSourceFactory, streamUrl: String, subTitle: String): MediaSource {
-        currentSubTitle.value = subTitle
+    private fun buildMediaSource(dataSourceFactory: DefaultDataSourceFactory, streamUrl: String): MediaSource {
+
         val uri = Uri.parse(streamUrl)
 
         return when (val type = Util.inferContentType(uri)) {
