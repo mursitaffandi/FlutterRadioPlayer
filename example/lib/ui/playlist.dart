@@ -11,6 +11,14 @@ class PlaylistPage extends StatefulWidget {
 
   @override
   _PlaylistPageState createState() => _PlaylistPageState(ifacePlaylist);
+
+  void previous() {
+
+  }
+
+  void next() {
+
+  }
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {

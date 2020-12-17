@@ -34,10 +34,13 @@ class _HomePageState extends State<HomePage>
   AnimationController _animationController;
   int _currentPage = 0;
   bool musicState = false;
+  String currentStationName = "";
+  PlaylistPage playlist;
 
   @override
   void initState() {
     super.initState();
+    playlist = PlaylistPage(ifacePlaylist: this);
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     _initPlayer();
@@ -54,12 +57,13 @@ class _HomePageState extends State<HomePage>
         "JogjaScreamer", "subTitle", "streamURL", "true");
   }
 
-  void _newRadio(
-      String stationsName, String stationsUri, String urlImage) async {
+  void _newRadio(String stationsName, String stationsUri, String urlImage) async {
     _pauseRadio();
-    await _flutterRadioPlayer.setUrl(
-        stationsName, stationsUri, "true", urlImage);
+    await _flutterRadioPlayer.setUrl(stationsName, stationsUri, "true", urlImage);
     await _flutterRadioPlayer.play();
+    setState(() {
+      currentStationName = stationsName;
+    });
   }
 
   void _pauseRadio() async {
@@ -91,7 +95,7 @@ class _HomePageState extends State<HomePage>
               child: IndexedStack(
                 index: _currentPage,
                 children: <Widget>[
-                  PlaylistPage(ifacePlaylist: this),
+                  playlist,
                   CityPage(),
                   RankPage(),
                   AboutPage()
@@ -110,13 +114,13 @@ class _HomePageState extends State<HomePage>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-
                   Container(
                     color: Colors.grey[300],
                     child: MarqueeWidget(
-                        child: Text("This text is to long to be shown in just one line This text is to long to be shown in just one line This text is to long to be shown in just one line",
-                        style: TextStyle(fontSize: 23),)
-                    ),
+                        child: Text(
+                      currentStationName,
+                      style: TextStyle(fontSize: 23),
+                    )),
                   ),
                   Container(
                     color: Colors.white,
@@ -130,7 +134,9 @@ class _HomePageState extends State<HomePage>
                             color: const Color(0xFF000000),
                             size: 56,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            playlist.previous();
+                          },
                         ),
                         new IconButton(
                           icon: new Icon(
@@ -148,7 +154,9 @@ class _HomePageState extends State<HomePage>
                             color: const Color(0xFF000000),
                             size: 56,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            playlist.next();
+                          },
                         )
                       ],
                     ),
