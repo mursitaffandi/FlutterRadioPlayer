@@ -55,6 +55,9 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         logger.info("Calling to method: " + call.method)
         when (call.method) {
+            PlayerMethods.IS_SERVICING.value -> {
+                result.success(StreamingCore.getStatus())
+            }
             PlayerMethods.IS_PLAYING.value -> {
                 val playStatus = isPlaying()
                 logger.info("is playing service invoked with result: $playStatus")

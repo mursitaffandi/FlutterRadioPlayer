@@ -32,6 +32,10 @@ class FlutterRadioPlayer {
     });
   }
 
+  Future<bool> isServicing() async {
+    return await _channel.invokeMapMethod("servicing");
+  }
+
   Future<bool> play() async {
     return await _channel.invokeMethod("play");
   }
@@ -77,7 +81,8 @@ class FlutterRadioPlayer {
   Stream<String> get metaDataStream {
     if (_metaDataStream == null) {
       _metaDataStream =
-          _eventChannelMetaData.receiveBroadcastStream().map<String>((value) => value);
+          _eventChannelMetaData.receiveBroadcastStream().map<String>((
+              value) => value);
     }
 
     return _metaDataStream;

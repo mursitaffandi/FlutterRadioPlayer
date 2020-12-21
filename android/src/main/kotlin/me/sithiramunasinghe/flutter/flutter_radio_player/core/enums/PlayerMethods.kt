@@ -1,6 +1,7 @@
 package me.sithiramunasinghe.flutter.flutter_radio_player.core.enums
 
 enum class PlayerMethods(val value: String) {
+    IS_SERVICING("servicing"),
     INIT("initService"),
     PLAY_PAUSE("playOrPause"),
     PLAY("play"),

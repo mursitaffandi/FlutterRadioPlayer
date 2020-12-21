@@ -25,6 +25,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import io.flutter.plugin.common.PluginRegistry
+import me.sithiramunasinghe.flutter.flutter_radio_player.FlutterRadioPlayerPlugin
 import me.sithiramunasinghe.flutter.flutter_radio_player.FlutterRadioPlayerPlugin.Companion.broadcastActionName
 import me.sithiramunasinghe.flutter.flutter_radio_player.FlutterRadioPlayerPlugin.Companion.broadcastChangedMetaDataName
 import me.sithiramunasinghe.flutter.flutter_radio_player.R
@@ -33,6 +35,12 @@ import java.util.logging.Logger
 
 class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
 
+    companion object {
+        private var status = false
+        fun getStatus() : Boolean{
+            return status
+        }
+    }
     private var logger = Logger.getLogger(StreamingCore::javaClass.name)
 
     private var isBound = false
@@ -103,7 +111,7 @@ class StreamingCore : Service(), AudioManager.OnAudioFocusChangeListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        status = true
         logger.info("Firing up service. (onStartCommand)...")
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context)
