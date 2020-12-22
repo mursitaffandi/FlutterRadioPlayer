@@ -33,13 +33,14 @@ class _HomePageState extends State<HomePage>
   FlutterRadioPlayer _flutterRadioPlayer = new FlutterRadioPlayer();
   AnimationController _animationController;
   int _currentPage = 0;
-  bool musicState = false;
   String currentStationName = "";
   PlaylistPage playlist;
+  bool statue = false;
 
   @override
   void initState() {
     super.initState();
+    getStateus();
     playlist = PlaylistPage(ifacePlaylist: this);
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
@@ -50,6 +51,8 @@ class _HomePageState extends State<HomePage>
     _animationController.dispose();
     super.dispose();
   }
+
+  bool musicState = false;
 
   void _newRadio(
       String stationsName, String stationsUri, String urlImage) async {
@@ -62,11 +65,22 @@ class _HomePageState extends State<HomePage>
     await _flutterRadioPlayer.play();
     setState(() {
       currentStationName = stationsName;
+      statue = true;
     });
   }
 
   void _pauseRadio() async {
     await _flutterRadioPlayer.pause();
+    setState(() {
+      musicState = false;
+    });
+  }
+
+  void _playRadio() async {
+    await _flutterRadioPlayer.play();
+    setState(() {
+      musicState = true;
+    });
   }
 
   @override
@@ -111,7 +125,7 @@ class _HomePageState extends State<HomePage>
                     child: child);
               },
               child: Visibility(
-                visible: getStateus(),
+                visible: statue,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -141,12 +155,15 @@ class _HomePageState extends State<HomePage>
                           ),
                           new IconButton(
                             icon: new Icon(
-                              musicState ? Icons.play_arrow : Icons.pause,
+                              musicState ? Icons.pause : Icons.play_arrow,
                               color: const Color(0xFF000000),
                               size: 56,
                             ),
                             onPressed: () {
-                              _pauseRadio();
+                              if(musicState)
+                                _pauseRadio();
+                              else
+                                _playRadio();
                             },
                           ),
                           new IconButton(
@@ -231,14 +248,13 @@ class _HomePageState extends State<HomePage>
     _animationController.forward();
   }
 
-  bool getStateus() {
-    var ret = false;
+  void getStateus() {
     _flutterRadioPlayer.isServicing().then((value) {
-      ret = value;
+      setState(() {
+        statue = value;
+      });
     }).catchError((error) {
       print(error);
     });
-
-    return ret;
   }
 }

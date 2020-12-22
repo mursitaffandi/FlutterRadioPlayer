@@ -33,7 +33,7 @@ class FlutterRadioPlayer {
   }
 
   Future<bool> isServicing() async {
-    return await _channel.invokeMapMethod("servicing");
+    return await _channel.invokeMethod("servicing");
   }
 
   Future<bool> play() async {
