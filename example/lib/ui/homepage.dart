@@ -59,8 +59,7 @@ class _HomePageState extends State<HomePage>
     if (musicState) {
       await _flutterRadioPlayer.stop();
     }
-    await _flutterRadioPlayer.init(
-        "JogjaStreamer", stationsName, stationsUri, "true");
+    await _flutterRadioPlayer.init("JogjaStreamer", stationsName, stationsUri, "true");
     musicState = true;
     await _flutterRadioPlayer.play();
     setState(() {
