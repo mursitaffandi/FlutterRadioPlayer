@@ -61,23 +61,22 @@ class _HomePageState extends State<HomePage>
     await _flutterRadioPlayer.play();
     getStateus();
     setState(() {
-      musicState = true;
+      musicState = PlayerState.PLAYED;
       currentStationName = stationsName;
-      statue = true;
     });
   }
 
   void _pauseRadio() async {
     await _flutterRadioPlayer.pause();
     setState(() {
-      musicState = false;
+      musicState = PlayerState.PAUSED;
     });
   }
 
   void _playRadio() async {
     await _flutterRadioPlayer.play();
     setState(() {
-      musicState = true;
+      musicState = PlayerState.PLAYED;
     });
   }
 
@@ -160,11 +159,11 @@ class _HomePageState extends State<HomePage>
                           Expanded(
                             child: IconButton(
                               icon: Icon(
-                                musicState ? Icons.pause : Icons.play_arrow,
+                                (musicState==PlayerState.PLAYED) ? Icons.pause : Icons.play_arrow,
                                 size: 56,
                               ),
                               onPressed: () {
-                                if(musicState)
+                                if(musicState==PlayerState.PLAYED)
                                   _pauseRadio();
                                 else
                                   _playRadio();
@@ -244,7 +243,7 @@ class _HomePageState extends State<HomePage>
   void getStateus() {
     _flutterRadioPlayer.isServicing().then((value) {
       setState(() {
-        statue = value;
+
       });
     }).catchError((error) {
       print(error);
