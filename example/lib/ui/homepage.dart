@@ -42,8 +42,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     getStateus();
     playlist = PlaylistPage(ifacePlaylist: this);
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
   }
 
   @override
@@ -54,15 +53,15 @@ class _HomePageState extends State<HomePage>
 
   bool musicState = false;
 
-  void _newRadio(
-      String stationsName, String stationsUri, String urlImage) async {
-    if (musicState) {
+  void _newRadio(String stationsName, String stationsUri, String urlImage) async {
+    if (musicState)
       await _flutterRadioPlayer.stop();
-    }
+
     await _flutterRadioPlayer.init("JogjaStreamer", stationsName, stationsUri, "true");
-    musicState = true;
     await _flutterRadioPlayer.play();
+    getStateus();
     setState(() {
+      musicState = true;
       currentStationName = stationsName;
       statue = true;
     });
@@ -112,7 +111,8 @@ class _HomePageState extends State<HomePage>
                   RankPage(),
                   AboutPage()
                 ],
-              )),
+              )
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedBuilder(
@@ -137,6 +137,7 @@ class _HomePageState extends State<HomePage>
                       )),
                     ),
                     Container(
+                      height: 100,
                       color: Colors.white,
                       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                       child: Row(

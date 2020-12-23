@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radio_player_example/model/mobile.dart';
 import 'package:flutter_radio_player_example/model/slider.dart';
 import 'package:flutter_radio_player_example/repository/repo.dart';
+import 'package:flutter_radio_player_example/ui/about.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class PlaylistPage extends StatefulWidget {
@@ -114,9 +115,14 @@ class _PlaylistPageState extends State<PlaylistPage> {
       // ignore: missing_return
       itemBuilder: (BuildContext context, int index) {
         for (int i = index; i < sliders.length; i++) {
-          return Image.network(
-            sliders[i].image,
-            fit: BoxFit.fitHeight,
+          return GestureDetector(
+            onTap: (){
+              AboutPage.launchURL(sliders[i].url);
+            },
+            child: Image.network(
+              sliders[i].image,
+              fit: BoxFit.fitHeight,
+            ),
           );
         }
       },
