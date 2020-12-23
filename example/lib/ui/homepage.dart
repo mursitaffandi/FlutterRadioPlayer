@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radio_player/flutter_radio_player.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_radio_player_example/model/mobile.dart';
+import 'package:flutter_radio_player_example/model/music_state.dart';
 import 'package:flutter_radio_player_example/ui/mobile_city.dart';
 import 'package:flutter_radio_player_example/ui/mobile_rank.dart';
 import 'package:flutter_radio_player_example/ui/playlist.dart';
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage>
   int _currentPage = 0;
   String currentStationName = "";
   PlaylistPage playlist;
-  bool statue = false;
+  PlayerState musicState;
 
   @override
   void initState() {
@@ -52,10 +53,8 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  bool musicState = false;
-
   void _newRadio(String stationsName, String stationsUri, String urlImage) async {
-    if (musicState)
+    if (musicState != PlayerState.STOPPED)
       await _flutterRadioPlayer.stop();
 
     await _flutterRadioPlayer.init("JogjaStreamers", stationsName, stationsUri, "true");
@@ -136,43 +135,61 @@ class _HomePageState extends State<HomePage>
                       )),
                     ),
                     Container(
-                      height: 64,
+                      height: 62,
                       color: Colors.white,
+                      padding: const EdgeInsets.only(left : 20.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          new IconButton(
-                            icon: new Icon(
-                              Icons.skip_previous,
-                              color: const Color(0xFF000000),
-                              size: 56,
+                          Expanded(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.skip_previous,
+                                color: const Color(0xFF000000),
+                                size: 56,
+                              ),
+                              onPressed: () {
+                                playlist.previous();
+                              },
                             ),
-                            onPressed: () {
-                              playlist.previous();
-                            },
                           ),
-                          IconButton(
-                            icon: Icon(
-                              musicState ? Icons.pause : Icons.play_arrow,
-                              size: 56,
-                            ),
-                            onPressed: () {
-                              if(musicState)
-                                _pauseRadio();
-                              else
-                                _playRadio();
-                            },
+                          VerticalDivider(
+                            color: Colors.black26,
                           ),
-                          new IconButton(
-                            icon: new Icon(
-                              Icons.skip_next,
-                              color: const Color(0xFF000000),
-                              size: 56,
+
+                          Expanded(
+                            child: IconButton(
+                              icon: Icon(
+                                musicState ? Icons.pause : Icons.play_arrow,
+                                size: 56,
+                              ),
+                              onPressed: () {
+                                if(musicState)
+                                  _pauseRadio();
+                                else
+                                  _playRadio();
+                              },
                             ),
-                            onPressed: () {
-                              playlist.next();
-                            },
-                          )
+                          ),
+                          VerticalDivider(
+                            color: Colors.black26,
+                          ),
+
+                          Expanded(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.skip_next,
+                                color: const Color(0xFF000000),
+                                size: 56,
+                              ),
+                              onPressed: () {
+                                playlist.next();
+                              },
+                            ),
+                          ),
+                          VerticalDivider(
+                            color: Colors.black26,
+                          ),
                         ],
                       ),
                     ),
