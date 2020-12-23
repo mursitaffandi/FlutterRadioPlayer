@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     _animationController.dispose();
+    _flutterRadioPlayer.stop();
     super.dispose();
   }
 
@@ -57,7 +58,7 @@ class _HomePageState extends State<HomePage>
     if (musicState)
       await _flutterRadioPlayer.stop();
 
-    await _flutterRadioPlayer.init("JogjaStreamer", stationsName, stationsUri, "true");
+    await _flutterRadioPlayer.init("JogjaStreamers", stationsName, stationsUri, "true");
     await _flutterRadioPlayer.play();
     getStateus();
     setState(() {
@@ -123,9 +124,7 @@ class _HomePageState extends State<HomePage>
                     sizeFactor: _animationController,
                     child: child);
               },
-              child: Visibility(
-                visible: statue,
-                child: Column(
+              child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Container(
@@ -133,15 +132,14 @@ class _HomePageState extends State<HomePage>
                       child: MarqueeWidget(
                           child: Text(
                         currentStationName,
-                        style: TextStyle(fontSize: 23),
+                        style: TextStyle(fontSize: 12),
                       )),
                     ),
                     Container(
-                      height: 100,
+                      height: 64,
                       color: Colors.white,
-                      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           new IconButton(
                             icon: new Icon(
@@ -153,10 +151,9 @@ class _HomePageState extends State<HomePage>
                               playlist.previous();
                             },
                           ),
-                          new IconButton(
-                            icon: new Icon(
+                          IconButton(
+                            icon: Icon(
                               musicState ? Icons.pause : Icons.play_arrow,
-                              color: const Color(0xFF000000),
                               size: 56,
                             ),
                             onPressed: () {
@@ -181,7 +178,6 @@ class _HomePageState extends State<HomePage>
                     ),
                   ],
                 ),
-              ),
             ),
           ),
         ],
@@ -190,7 +186,7 @@ class _HomePageState extends State<HomePage>
         child: ListView(
           children: <Widget>[
             DrawerHeader(
-              child: Text('Drawer Header'),
+              child: Image.asset("assets/head-jogjastreamer.png"),
               decoration: BoxDecoration(
                 color: Colors.orange,
               ),
@@ -201,26 +197,6 @@ class _HomePageState extends State<HomePage>
               onTap: () {
                 setState(() {
                   _currentPage = 0;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.location_city),
-              title: Text('mobile_city'),
-              onTap: () {
-                setState(() {
-                  _currentPage = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.leaderboard),
-              title: Text('mobile_ranking'),
-              onTap: () {
-                setState(() {
-                  _currentPage = 2;
                 });
                 Navigator.pop(context);
               },
