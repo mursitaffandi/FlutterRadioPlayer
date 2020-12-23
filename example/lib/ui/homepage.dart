@@ -36,48 +36,30 @@ class _HomePageState extends State<HomePage>
   int _currentPage = 0;
   String currentStationName = "";
   PlaylistPage playlist;
-  PlayerState musicState;
 
   @override
   void initState() {
     super.initState();
-    getStateus();
     playlist = PlaylistPage(ifacePlaylist: this);
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     _animationController.dispose();
     _flutterRadioPlayer.stop();
+
     super.dispose();
   }
 
+  bool musicState = false;
   void _newRadio(String stationsName, String stationsUri, String urlImage) async {
-    if (musicState != PlayerState.STOPPED)
+    if (musicState)
       await _flutterRadioPlayer.stop();
 
     await _flutterRadioPlayer.init("JogjaStreamers", stationsName, stationsUri, "true");
     await _flutterRadioPlayer.play();
-    getStateus();
-    setState(() {
-      musicState = PlayerState.PLAYED;
-      currentStationName = stationsName;
-    });
-  }
-
-  void _pauseRadio() async {
-    await _flutterRadioPlayer.pause();
-    setState(() {
-      musicState = PlayerState.PAUSED;
-    });
-  }
-
-  void _playRadio() async {
-    await _flutterRadioPlayer.play();
-    setState(() {
-      musicState = PlayerState.PLAYED;
-    });
+    musicState = true;
   }
 
   @override
@@ -112,98 +94,17 @@ class _HomePageState extends State<HomePage>
                 ],
               )
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return SizeTransition(
-                    axisAlignment: -1,
-                    sizeFactor: _animationController,
-                    child: child);
-              },
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      color: Colors.grey[300],
-                      child: MarqueeWidget(
-                          child: Text(
-                        currentStationName,
-                        style: TextStyle(fontSize: 12),
-                      )),
-                    ),
-                    Container(
-                      height: 62,
-                      color: Colors.white,
-                      padding: const EdgeInsets.only(left : 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Expanded(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.skip_previous,
-                                color: const Color(0xFF000000),
-                                size: 56,
-                              ),
-                              onPressed: () {
-                                playlist.previous();
-                              },
-                            ),
-                          ),
-                          VerticalDivider(
-                            color: Colors.black26,
-                          ),
-
-                          Expanded(
-                            child: IconButton(
-                              icon: Icon(
-                                (musicState==PlayerState.PLAYED) ? Icons.pause : Icons.play_arrow,
-                                size: 56,
-                              ),
-                              onPressed: () {
-                                if(musicState==PlayerState.PLAYED)
-                                  _pauseRadio();
-                                else
-                                  _playRadio();
-                              },
-                            ),
-                          ),
-                          VerticalDivider(
-                            color: Colors.black26,
-                          ),
-
-                          Expanded(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.skip_next,
-                                color: const Color(0xFF000000),
-                                size: 56,
-                              ),
-                              onPressed: () {
-                                playlist.next();
-                              },
-                            ),
-                          ),
-                          VerticalDivider(
-                            color: Colors.black26,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-            ),
-          ),
         ],
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
             DrawerHeader(
-              child: Image.asset("assets/head-jogjastreamer.png"),
               decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/head-jogjastreamer.png"),
+                  fit: BoxFit.cover,
+                ),
                 color: Colors.orange,
               ),
             ),
@@ -237,16 +138,10 @@ class _HomePageState extends State<HomePage>
   @override
   void selectStation(Station station) {
     _newRadio(station.name, station.streamURL, station.imageURL);
-    _animationController.forward();
   }
 
-  void getStateus() {
-    _flutterRadioPlayer.isServicing().then((value) {
-      setState(() {
-
-      });
-    }).catchError((error) {
-      print(error);
-    });
+  @override
+  void playOrPause() async {
+    await _flutterRadioPlayer.playOrPause();
   }
 }
