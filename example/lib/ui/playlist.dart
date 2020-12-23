@@ -65,9 +65,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     fit: BoxFit.cover,
                     width: 100.0,
                   ),
-                  title: Text(
-                      stations[index].name == null? "" : stations[index].name
-                  ),
+                  title: Text(stations[index].name),
                   onTap: () {
                     callback.selectStation(stations[index]);
                     setState(() {
@@ -84,14 +82,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Container(
-                color: Colors.grey[300],
-                child: MarqueeWidget(
-                    child: Text(
-                  currentStation.name,
-                  style: TextStyle(fontSize: 12),
-                )),
-              ),
               Container(
                 height: 62,
                 color: Colors.white,
