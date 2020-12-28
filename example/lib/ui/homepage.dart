@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radio_player/flutter_radio_player.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_radio_player_example/model/mobile.dart';
-import 'package:flutter_radio_player_example/model/music_state.dart';
 import 'package:flutter_radio_player_example/ui/mobile_city.dart';
 import 'package:flutter_radio_player_example/ui/mobile_rank.dart';
 import 'package:flutter_radio_player_example/ui/playlist.dart';
 import 'package:flutter_radio_player_example/ui/widgets.dart';
-
 import 'about.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,11 +43,9 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     _animationController.dispose();
-    _flutterRadioPlayer.stop();
-
-    super.dispose();
+      super.dispose();
   }
 
   bool musicState = false;

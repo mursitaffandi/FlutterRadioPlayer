@@ -56,6 +56,7 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
         logger.info("Calling to method: " + call.method)
         when (call.method) {
             PlayerMethods.IS_SERVICING.value -> {
+
                 result.success(StreamingCore.getStatus())
             }
             PlayerMethods.IS_PLAYING.value -> {
@@ -105,6 +106,7 @@ public class FlutterRadioPlayerPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        if(isBound) stop()
         methodChannel.setMethodCallHandler(null)
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(broadcastReceiver)
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(broadcastReceiverMetaDetails)
